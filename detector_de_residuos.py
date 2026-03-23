@@ -146,6 +146,10 @@ def main():
         
         cv2.addWeighted(overlay, 0.6, frame, 0.4, 0, frame)
 
+        # Mostrar instrucción para salir en la esquina superior derecha
+        cv2.putText(frame, "Presiona 'q' para salir", (w - 300, 50), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+
         # 3. Dibujar el menú de cosas que puede reconocer (arriba izquierda)
         cv2.putText(frame, "MATERIALES:", (30, 45), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2)
