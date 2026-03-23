@@ -8,7 +8,7 @@ client = InferenceHTTPClient(
 )
 
 CAMARA_INDEX = 0
-FRAME_SKIP = 5  # Analiza 1 de cada 5 frames (ajusta según tu internet)
+FRAME_SKIP = 5  
 
 cap = cv2.VideoCapture(CAMARA_INDEX, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)   # ← Baja resolución para menos lag
