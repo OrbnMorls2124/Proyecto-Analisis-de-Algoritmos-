@@ -37,7 +37,7 @@ def inference_worker():
             frame_to_analyze = None
 
         if frame is None:
-            threading.Event().wait(0.01)  # pequeña pausa si no hay frame
+            threading.Event().wait(0.01)  
             continue
 
         try:
