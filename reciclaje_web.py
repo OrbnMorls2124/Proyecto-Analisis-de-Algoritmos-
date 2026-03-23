@@ -11,7 +11,7 @@ CAMARA_INDEX = 0
 FRAME_SKIP = 5  
 
 cap = cv2.VideoCapture(CAMARA_INDEX, cv2.CAP_DSHOW)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)   # ← Baja resolución para menos lag
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)   
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_FPS, 30)
 
