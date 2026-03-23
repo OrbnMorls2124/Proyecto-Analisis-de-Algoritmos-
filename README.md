@@ -152,20 +152,4 @@ Reciclaje_ProyectoFinal/
 └── README.md           # Este archivo
 ```
 
-
-## Créditos
-
-**Proyecto Final — Detección Inteligente de Residuos**
-
-| Integrante | 
-|-----------|
-| Anyeli Rivas |
-| Orbin Morales |
-
-Modelo de detección: [Roboflow Universe — trash-detection-ujrn0](https://universe.roboflow.com)
-
----
-
-## 📄 Licencia
-
 Este proyecto es de uso académico. El modelo de IA pertenece a su autor original en Roboflow Universe. La API Key es de uso personal — no compartir públicamente.
