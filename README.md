@@ -1,16 +1,35 @@
-# Proyecto Final - Análisis de Algoritmos
+# ♻️ Reciclaje Inteligente
+### Detección de Residuos en Tiempo Real con IA
+`Python` • `OpenCV` • `Roboflow` • `Threading`
 
-Hola. Este es el repositorio de mi proyecto final para la materia de Análisis de Algoritmos. Básicamente hice un programa que usa la cámara de la compu para detectar qué tipo de basura le estás poniendo enfrente (plástico, cartón, metal, vidrio, orgánico, etc.) y saber cómo clasificarla correctamente.
+---
 
-## Qué le agregué al código
-Estuve probando distintas opciones y al final estructuré el programa para que corra todo de forma 100% local (sin tener que usar internet ni APIs). 
+## Descripción
 
-- Detección de objetos: Usé una red neuronal con formato ONNX (MobileNet) que ya conoce miles de objetos de la vida diaria. Lo que hice en el código (detector_de_residuos.py) fue armar un diccionario que toma lo que ve la cámara y lo agrupa matemáticamente en las 6 categorías de reciclaje principales que ocupamos para la clase.
-- Diseño de pantalla: En lugar de poner los clásicos cuadros de detección que brincan por todos lados, hice un layout directamente en la pantalla de la cámara con rectángulos semitransparentes para mostrar qué residuo detectó de una forma más limpia.
+Reciclaje Inteligente es una aplicación de visión por computadora que captura video en tiempo real desde la webcam del equipo y utiliza un modelo de detección de objetos alojado en Roboflow para identificar y clasificar tipos de residuos (plástico, vidrio, papel, etc.). Las detecciones se superponen directamente sobre el video con cajas delimitadoras y etiquetas de clase con porcentaje de confianza.
+
+El sistema usa multithreading para separar la captura de video de las llamadas a la API, garantizando que la ventana de video nunca se congele mientras espera la respuesta del modelo.
+
+---
+
+## Integrantes del Grupo
+
+| Nombre | 
+|--------|
+| Anyeli Rivas |
+| Orbin Morales |
+
+---
+
+## Qué se agrego al código
+Se estuvieron probando distintas opciones y al final se estructuro el programa para que corra todo de forma 100% local (sin tener que usar internet ni APIs). 
+
+- Detección de objetos: Se uso una red neuronal con formato ONNX (MobileNet) que ya conoce miles de objetos de la vida diaria. Lo que se hizo en el código (detector_de_residuos.py) fue armar un diccionario que toma lo que ve la cámara y lo agrupa matemáticamente en las 6 categorías de reciclaje principales que ocupamos para la clase.
+- Diseño de pantalla: En lugar de poner los clásicos cuadros de detección que brincan por todos lados, se hizo un layout directamente en la pantalla de la cámara con rectángulos semitransparentes para mostrar qué residuo detectó de una forma más limpia.
 
 ## Cómo probar el proyecto desde cero
 
-Si quieres bajar mi trabajo y probarlo en tu propia computadora, aquí te explico los pasos exactos que debes seguir para que no falles:
+Si quieres bajar el trabajo y probarlo en tu propia computadora, aquí te explico los pasos exactos que debes seguir para que no falles:
 
 1. **Bájate el código de mi GitHub:**
    Abre una terminal o CMD en tu computadora, entra en la carpeta donde quieras guardar el proyecto y pega este comando:
@@ -42,4 +61,4 @@ Si quieres bajar mi trabajo y probarlo en tu propia computadora, aquí te explic
    - **En el lente:** Pon botellas, manzanas, libros o lo que tengas de reciclaje cerca y verás la clasificación en la parte de abajo de la ventana.
    - **Para salir:** Si ya te cansaste de probarlo, presiona la tecla **'q'** y se cerrará todo solito.
 
-¡Y listo! Con eso ya puedes ver funcionando mi detector de residuos. 🌍
+¡Y listo! Con eso ya puedes ver funcionando el detector de residuos. 🌍
