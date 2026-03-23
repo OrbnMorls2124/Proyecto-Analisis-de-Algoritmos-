@@ -119,7 +119,7 @@ pip install inference-sdk
 
 ---
 
-## 🚀 Instalación y Uso
+## Instalación y Uso
 
 ### 1. Clonar o descargar el proyecto
 
@@ -144,7 +144,7 @@ python reciclaje_web.py
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Reciclaje_ProyectoFinal/
