@@ -1,6 +1,6 @@
 # ♻️ Reciclaje Inteligente
 ### Detección de Residuos en Tiempo Real con IA
-`Python` • `OpenCV` • `Roboflow` • `Threading`
+`Python` • `OpenCV` • `MobileNetV2` 
 
 ---
 
