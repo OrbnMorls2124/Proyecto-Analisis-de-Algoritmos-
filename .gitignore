@@ -1,0 +1,11 @@
+# Ignorar los pesos de los modelos pesados
+*.onnx
+*.weights
+*.caffemodel
+*.pb
+*.txt
+*.names
+
+# Python
+__pycache__/
+*.pyc
