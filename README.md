@@ -97,7 +97,6 @@ python detector_de_residuos.py
 ### Archivos del Proyecto
 
 - `detector_de_residuos.py`: Aplicación principal con interfaz Tkinter
-- `reciclaje_web.py`: Versión alternativa usando Roboflow API
 - `mobilenetv2-7.onnx`: Modelo MobileNetV2 descargado automáticamente
 - `imagenet_classes.txt`: Lista de 1000 clases ImageNet
 - `README.md`: Esta documentación
