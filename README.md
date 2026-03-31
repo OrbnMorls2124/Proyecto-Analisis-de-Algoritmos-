@@ -68,34 +68,6 @@ La aplicación cuenta con una interfaz gráfica intuitiva construida con Tkinter
 
 ---
 
-## Arquitectura del Sistema
-
-### Modelo MobileNetV2
-
-MobileNetV2 es una red neuronal convolucional eficiente optimizada para dispositivos móviles, pre-entrenada en el dataset ImageNet con 1000 clases de objetos comunes. En este proyecto se usa para clasificación de imágenes, procesando cada frame de video a través de la red para obtener predicciones de clase con porcentajes de confianza.
-
-### Procesamiento de Video
-
-1. **Captura**: Webcam a 1280×720, flip horizontal para efecto espejo
-2. **Preprocesamiento**: Resize a 224×224, normalización, swap RB
-3. **Inferencia**: MobileNetV2 forward pass para obtener logits
-4. **Post-procesamiento**: Softmax para probabilidades, selección de top-1
-5. **Categorización**: Mapeo de clase ImageNet a categoría de residuo
-6. **Estabilización**: Voting buffer para evitar fluctuaciones
-7. **Display**: Overlay en video + actualización de UI Tkinter
-
-### Estabilización Temporal
-
-Para evitar que las detecciones "salten" entre frames, el sistema implementa:
-
-- **Voting Buffer**: Últimos 12 resultados de material
-- **Umbral de Entrada**: 30% confianza para activar nuevo material
-- **Umbral de Mantenimiento**: 18% para mantener material actual
-- **Cooldown**: 1.2 segundos entre cambios de material
-- **EMA Smoothing**: Suavizado exponencial de confianza (α=0.25)
-
----
-
 ## Instalación y Uso
 
 ### Prerrequisitos
@@ -135,26 +107,6 @@ python detector_de_residuos.py
 - **ESC**: Salir del programa
 - **Botón "SALIR"**: Cerrar aplicación
 - Enfoque un objeto frente a la cámara para clasificación automática
-
----
-
-## Desarrollo y Contribución
-
-### Estructura del Código
-
-- **AppDetector**: Clase principal de Tkinter
-- **_inicializar_modelo()**: Carga MobileNetV2 y clases
-- **_loop_camara()**: Bucle principal de captura e inferencia
-- **_poll_frame()**: Actualización de UI a 60 FPS
-- **categorizar()**: Mapeo clase → material de residuo
-
-### Mejoras Futuras
-
-- Soporte para múltiples cámaras
-- Exportación de logs de detección
-- Modo batch para procesamiento de imágenes
-- Integración con bases de datos para estadísticas
-- Entrenamiento fino del modelo para residuos específicos
 
 ---
 
