@@ -1,6 +1,6 @@
 # ♻️ Reciclaje Inteligente
 ### Detección de Residuos en Tiempo Real con IA
-`Python` • `OpenCV` • `MobileNetV2` 
+`Python` • `OpenCV` • `Roboflow` • `Threading`
 
 ---
 
@@ -9,6 +9,17 @@
 Reciclaje Inteligente es una aplicación de visión por computadora que captura video en tiempo real desde la webcam del equipo y utiliza un modelo de detección de objetos alojado en Roboflow para identificar y clasificar tipos de residuos (plástico, vidrio, papel, etc.). Las detecciones se superponen directamente sobre el video con cajas delimitadoras y etiquetas de clase con porcentaje de confianza.
 
 El sistema usa multithreading para separar la captura de video de las llamadas a la API, garantizando que la ventana de video nunca se congele mientras espera la respuesta del modelo.
+
+---
+
+## Características
+
+- Detección de residuos en tiempo real usando modelo entrenado en Roboflow
+- Procesamiento asíncrono: el video nunca se bloquea esperando la API
+- HUD con estado de análisis y contador de objetos detectados
+- Cajas delimitadoras con etiqueta de clase y porcentaje de confianza
+- Configurable: índice de cámara, resolución, FPS y frecuencia de análisis
+- Compatible con Windows usando el backend DirectShow (`CAP_DSHOW`)
 
 ---
 
@@ -21,44 +32,124 @@ El sistema usa multithreading para separar la captura de video de las llamadas a
 
 ---
 
-## Qué se agrego al código
-Se estuvieron probando distintas opciones y al final se estructuro el programa para que corra todo de forma 100% local (sin tener que usar internet ni APIs). 
+## Información del Proyecto
 
-- Detección de objetos: Se uso una red neuronal con formato ONNX (MobileNet) que ya conoce miles de objetos de la vida diaria. Lo que se hizo en el código (detector_de_residuos.py) fue armar un diccionario que toma lo que ve la cámara y lo agrupa matemáticamente en las 6 categorías de reciclaje principales que ocupamos para la clase.
-- Diseño de pantalla: En lugar de poner los clásicos cuadros de detección que brincan por todos lados, se hizo un layout directamente en la pantalla de la cámara con rectángulos semitransparentes para mostrar qué residuo detectó de una forma más limpia.
+| Campo | Valor |
+|-------|-------|
+| Lenguaje | Python 3.12 |
+| Modelo de IA | trash-detection-ujrn0/1 (Roboflow) |
+| API | Roboflow Serverless Inference HTTP |
+| Librería de video | OpenCV (cv2) |
+| Resolución | 640 × 480 px |
+| FPS objetivo | 30 |
+| Frame skip | Cada 5 frames (configurable) |
+| Sistema operativo | Windows (probado en Win 11) |
 
-## Cómo probar el proyecto desde cero
+---
 
-Si quieres bajar el trabajo y probarlo en tu propia computadora, aquí te explico los pasos exactos que debes seguir para que no falles:
+## Integración con Roboflow API
 
-1. **Bájate el código de mi GitHub:**
-   Abre una terminal o CMD en tu computadora, entra en la carpeta donde quieras guardar el proyecto y pega este comando:
-   ```bash
-   git clone -b orbin-dev https://github.com/OrbnMorls2124/Proyecto-Analisis-de-Algoritmos-.git
-   ```
-   *(Nota: Yo usé la rama 'orbin-dev', así que el comando de arriba ya te baja la versión final derechito).*
+Este proyecto utiliza la API de inferencia serverless de Roboflow para ejecutar el modelo de detección de residuos en la nube. Cada frame seleccionado se envía a la API y se recibe un JSON con las detecciones (clase, confianza, coordenadas).
 
-2. **Entra a la carpeta del proyecto:**
-   Muévete a la carpeta que se acaba de crear:
-   ```bash
-   cd "Proyecto-Analisis-de-Algoritmos-"
-   ```
+### ¿Qué es Roboflow?
 
-3. **Instala las librerías necesarias:**
-   El programa necesita OpenCV para manejar la cámara y Numpy para las matemáticas de la IA. Solo tienes que pegar este comando en tu terminal para instalarlas:
-   ```bash
-   pip install opencv-python numpy
-   ```
+Roboflow es una plataforma de visión por computadora que permite entrenar, gestionar y desplegar modelos de detección de objetos. En este proyecto se usa como proveedor de inferencia serverless, lo que significa que el modelo corre en la nube de Roboflow y el proyecto solo necesita enviar imágenes y recibir predicciones.
 
-4. **Inicia el detector:**
-   Ahora que ya tienes todo, solo escribe esto para encenderlo:
-   ```bash
-   python detector_de_residuos.py
-   ```
+### Información de la API usada
 
-5. **Tips de uso:**
-   - **La primera vez:** No te asustes si tarda unos segundos extras en abrir; el programa bajará automáticamente el archivo de la inteligencia artificial (pesa como 13MB) de internet. Esto solo pasa una vez.
-   - **En el lente:** Pon botellas, manzanas, libros o lo que tengas de reciclaje cerca y verás la clasificación en la parte de abajo de la ventana.
-   - **Para salir:** Si ya te cansaste de probarlo, presiona la tecla **'q'** y se cerrará todo solito.
+| Parámetro | Valor |
+|-----------|-------|
+| URL del servidor | https://serverless.roboflow.com |
+| Modelo ID | trash-detection-ujrn0/1 |
+| Versión del modelo | v1 |
+| Tipo de tarea | Object Detection |
+| SDK utilizado | inference-sdk (Python) |
+| Método de envío | HTTP POST con imagen como bytes |
+| Formato de respuesta | JSON con lista de predictions |
+| Autenticación | API Key en cabecera de la petición |
 
-¡Y listo! Con eso ya puedes ver funcionando el detector de residuos. 🌍
+### Cómo obtener tu API Key
+
+1. Crea una cuenta gratuita en https://roboflow.com
+2. Inicia sesión y entra a tu workspace
+3. En el menú lateral, haz clic en **Settings**
+4. Ve a la pestaña **Roboflow API** y copia tu **Private API Key**
+5. Pega la clave en el código donde dice `api_key=`
+
+> **Importante:** nunca compartas tu API Key públicamente (no la subas a GitHub sin ocultarla).
+
+### Cómo está configurada en el código
+
+```python
+from inference_sdk import InferenceHTTPClient
+
+client = InferenceHTTPClient(
+    api_url="https://serverless.roboflow.com",
+    api_key="TU_API_KEY_AQUI"  # ← reemplaza con tu clave
+)
+
+# Llamada a la API con un frame de la webcam
+result = client.infer(frame, model_id="trash-detection-ujrn0/1")
+predictions = result.get("predictions", [])
+```
+
+### Modelo utilizado: trash-detection-ujrn0
+
+- Tipo: Object Detection
+- Versión: 1
+- Entrenado para detectar múltiples categorías de residuos
+- Disponible en Roboflow Universe: https://universe.roboflow.com
+
+---
+
+## Requisitos
+
+### Software
+- Python 3.10 o superior
+- Pip (gestor de paquetes de Python)
+- Conexión a internet (para llamadas a la API de Roboflow)
+- Webcam conectada al equipo
+
+### Dependencias Python
+
+```bash
+pip install opencv-python
+pip install inference-sdk
+```
+
+---
+
+## Instalación y Uso
+
+### 1. Clonar o descargar el proyecto
+
+```bash
+git clone https://github.com/tu-usuario/Reciclaje_ProyectoFinal.git
+cd Reciclaje_ProyectoFinal
+```
+
+### 2. Instalar dependencias
+
+```bash
+pip install opencv-python inference-sdk
+```
+
+### 4. Ejecutar el proyecto
+
+```bash
+python reciclaje_web.py
+```
+
+> Presiona **Q** o **ESC** para cerrar la ventana de video.
+
+---
+
+## Estructura del Proyecto
+
+```
+Reciclaje_ProyectoFinal/
+├── reciclaje_web.py    # Script principal          
+└── README.md           # Este archivo
+```
+
+Este proyecto es de uso académico. El modelo de IA pertenece a su autor original en Roboflow Universe. La API Key es de uso personal — no compartir públicamente.
