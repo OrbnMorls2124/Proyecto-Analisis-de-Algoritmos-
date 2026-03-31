@@ -179,6 +179,7 @@ class AppDetector(tk.Tk):
 
         self._construir_ui()
         self.protocol("WM_DELETE_WINDOW", self._on_cerrar)
+        self.bind("<Escape>", lambda e: self._on_cerrar())
 
         # Lanzar hilo de carga + cámara
         threading.Thread(target=self._inicializar_modelo, daemon=True).start()
@@ -199,7 +200,7 @@ class AppDetector(tk.Tk):
         self.f_log      = tkfont.Font(family="Consolas", size=8)
 
         # ── Layout principal: video | panel ──
-        self.frame_video = tk.Frame(self, bg=COLOR_FONDO, width=800, height=600)
+        self.frame_video = tk.Frame(self, bg=COLOR_FONDO, width=800, height=450)
         self.frame_video.pack(side=tk.LEFT, padx=(12, 6), pady=12)
         self.frame_video.pack_propagate(False)
 
@@ -354,7 +355,13 @@ class AppDetector(tk.Tk):
             font=self.f_label, relief="flat", bd=0,
             activebackground="#E74C3C", activeforeground="#FFFFFF",
             cursor="hand2", command=self._on_cerrar
-        ).pack(side=tk.BOTTOM, fill=tk.X, padx=14, pady=14)
+        ).pack(side=tk.BOTTOM, fill=tk.X, padx=14, pady=(14, 4))
+
+        tk.Label(
+            p, text="Presiona ESC para salir",
+            bg=COLOR_PANEL, fg=COLOR_SUBTEXTO,
+            font=self.f_log, anchor="center"
+        ).pack(side=tk.BOTTOM, fill=tk.X, padx=14, pady=(0, 10))
 
     # ────────────────────────────────
     #  LÓGICA DE MODELO + CÁMARA (hilo separado)
@@ -469,12 +476,12 @@ class AppDetector(tk.Tk):
                 self._last_time   = ahora
 
             # ── Preparar frame para Tkinter (sin overlay OpenCV) ──
-            display = cv2.resize(frame, (800, 600))
+            display = cv2.resize(frame, (800, 450))
 
             # Dibujar borde de color según material
             color_borde = COLORES_MATERIAL.get(self.material_actual, "#556677")
             borde_bgr   = self._hex_to_bgr(color_borde)
-            cv2.rectangle(display, (0, 0), (799, 599), borde_bgr, 3)
+            cv2.rectangle(display, (0, 0), (799, 449), borde_bgr, 3)
 
             # Etiqueta flotante sobre el video
             if self.material_actual:
@@ -486,6 +493,13 @@ class AppDetector(tk.Tk):
             else:
                 cv2.putText(display, "Enfocando basura...", (12, 35),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (80, 100, 120), 2)
+
+            # ── Instrucción de salida (esquina inferior derecha) ──
+            instruccion_salida = "para salir del programa presiona tecla ESC."
+            (tw_esc, th_esc), _ = cv2.getTextSize(instruccion_salida, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+            cv2.rectangle(display, (800 - tw_esc - 14, 450 - th_esc - 12), (800 - 4, 450 - 4), (255, 255, 255), -1)
+            cv2.putText(display, instruccion_salida, (800 - tw_esc - 8, 450 - 8),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
 
             # ── Depositar frame RGB en cola (hilo principal crea ImageTk) ──
             # Crear ImageTk en hilo secundario causa race conditions en Tcl/Tk
@@ -521,8 +535,8 @@ class AppDetector(tk.Tk):
         self._actualizar_panel()
 
         if self.running:
-            # ~33 ms = 30 fps; suficiente para fluidez sin sobrecargar el event loop
-            self.after(33, self._poll_frame)
+            # ~16 ms = 60 fps; mejor fluidez sin sobrecargar el event loop
+            self.after(16, self._poll_frame)
 
     def _actualizar_panel(self):
         mat = self.material_actual
